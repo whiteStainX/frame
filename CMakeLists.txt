@@ -16,6 +16,8 @@ endif()
 # --- sources ---
 set(FRAME_SOURCES
   src/main.cpp
+  src/frame.cpp
+  src/renderer.cpp
 )
 
 # file(GLOB_RECURSE ANIMATION_SOURCES "src/*.cpp")
