@@ -1,6 +1,7 @@
 #include "frame.h"
 #include <fstream>
 #include <iostream>
+#include <notcurses/notcurses.h>
 
 Frame::Frame() : width(0), height(0) {}
 
@@ -21,17 +22,18 @@ bool Frame::load_from_file(const std::string& path) {
     width = 0;
     while (std::getline(file, line)) {
         pixels.push_back(line);
-        if (line.length() > static_cast<size_t>(width)) {
-            width = line.length();
+        int valid_bytes = 0;
+        int valid_width = 0;
+        int line_width = ncstrwidth(line.c_str(), &valid_bytes, &valid_width);
+        if (line_width < 0) {
+            line_width = valid_width;
+        }
+        if (line_width > width) {
+            width = line_width;
         }
     }
 
     height = pixels.size();
-
-    // Pad shorter lines with spaces to make the frame rectangular
-    for (auto& p_line : pixels) {
-        p_line.resize(width, ' ');
-    }
 
     file.close();
     return true;

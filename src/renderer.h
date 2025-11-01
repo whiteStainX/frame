@@ -21,12 +21,13 @@ public:
     // Draws a single frame, centered on the screen.
     void draw_frame(const Frame& frame);
     
-    // Waits for any key press from the user.
-    void wait_for_input();
+    // Waits until the user presses the Notcurses quit key ('q').
+    void wait_for_quit();
 
 private:
     struct notcurses* nc;
     struct ncplane* stdplane;
+    struct ncplane* frame_plane;
 };
 
 #endif //FRAME_RENDERER_H
