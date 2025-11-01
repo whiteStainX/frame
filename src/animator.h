@@ -5,28 +5,21 @@
 #include <vector>
 #include <string>
 
-// Forward-declare Config to avoid circular dependencies if Config needs the Animator later.
 struct Config;
 
 class Animator {
 public:
     explicit Animator(const Config& config);
 
-    // Returns a frame for a given step in the animation.
-    // For "sequence" mode, step is the frame index.
-    // For "interpolate" mode, step is the interpolation step.
-    Frame get_frame_at(int step) const;
+    // Stateless method to generate an interpolated frame.
+    Frame generate_interpolated_frame(const Frame& start, const Frame& end, int step, int total_steps) const;
 
-    // Gets the total number of frames or steps in the animation.
-    int get_total_steps() const;
+    // Accessors for the loaded frames.
+    const Frame& get_frame(int index) const;
+    int get_frame_count() const;
 
 private:
-    std::string mode;
     std::vector<Frame> frames;
-    int interpolation_steps;
-
-    // Generates an interpolated frame based on the step.
-    Frame generate_interpolated_frame(int step) const;
 };
 
 #endif //FRAME_ANIMATOR_H
