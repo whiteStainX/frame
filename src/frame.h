@@ -12,6 +12,9 @@ public:
     // Constructor that loads a frame from a file path
     explicit Frame(const std::string& path);
 
+    // Constructor for creating a frame from raw pixel data in memory
+    explicit Frame(std::vector<std::string> new_pixels);
+
     // Load a frame from a file path. Returns false if loading fails.
     bool load_from_file(const std::string& path);
 
