@@ -31,4 +31,7 @@ compile_commands.json
 /.vscode
 
 # assets
-# /assets/*
+/assets/
+
+# config file
+frame.toml
