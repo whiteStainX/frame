@@ -14,6 +14,7 @@ struct Config {
     int steps = 1;
     int frame_rate = 10;
     int pause_ms = 0;
+    int loop_pause_ms = 0;
     bool loop = false;
     std::string config_file = "frame.toml";
 };
@@ -33,6 +34,7 @@ inline Config parse_config(int argc, char** argv) {
         ("r,rate", "Frame rate", cxxopts::value<int>())
         ("l,loop", "Loop animation", cxxopts::value<bool>())
         ("p,pause", "Pause between interpolations in ms", cxxopts::value<int>())
+        ("loop-pause", "Pause between loops in ms", cxxopts::value<int>())
         ("c,config", "Path to config file", cxxopts::value<std::string>(config_path_from_cli))
         ("h,help", "Print usage");
     
@@ -61,6 +63,7 @@ inline Config parse_config(int argc, char** argv) {
         config.steps = tbl["steps"].value_or(1);
         config.frame_rate = tbl["rate"].value_or(10);
         config.pause_ms = tbl["pause_ms"].value_or(0);
+        config.loop_pause_ms = tbl["loop_pause_ms"].value_or(0);
         config.loop = tbl["loop"].value_or(false);
 
     } catch (const toml::parse_error& err) {
@@ -78,6 +81,7 @@ inline Config parse_config(int argc, char** argv) {
     if (result.count("steps")) config.steps = result["steps"].as<int>();
     if (result.count("rate")) config.frame_rate = result["rate"].as<int>();
     if (result.count("pause")) config.pause_ms = result["pause"].as<int>();
+    if (result.count("loop-pause")) config.loop_pause_ms = result["loop-pause"].as<int>();
     if (result.count("loop")) config.loop = result["loop"].as<bool>();
 
     return config;
