@@ -77,6 +77,11 @@ void run_animation_mode(const Config& config) {
 
         } while (config.loop);
 
+        // If the animation completes without being quit, wait for a final quit command.
+        if (!quit_requested) {
+            renderer.wait_for_quit();
+        }
+
     } catch (const std::runtime_error& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         exit(1);
