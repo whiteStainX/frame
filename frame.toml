@@ -11,4 +11,4 @@ steps = 60
 rate = 24
 
 # Whether the animation should loop.
-loop = true
+loop = false
