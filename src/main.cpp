@@ -22,9 +22,7 @@ int main(int argc, char** argv) {
         Renderer renderer;
         renderer.clear_screen();
         renderer.draw_frame(frame);
-        
-        std::cout << "\n\nPress any key to exit." << std::endl;
-        renderer.wait_for_input();
+        renderer.wait_for_quit();
 
     } else {
         std::cout << "Mode '" << config.mode << "' is not yet implemented." << std::endl;
