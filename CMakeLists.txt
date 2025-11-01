@@ -29,6 +29,8 @@ add_dependencies(frame config_dependency)
 # --- includes ---
 target_include_directories(frame PRIVATE
   src
+  external/cxxopts
+  external/tomlplusplus
 )
 
 # --- link notcurses (and its transitive deps) ---
