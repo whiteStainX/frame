@@ -1,0 +1,18 @@
+# Animation mode: "static", "interpolate", or "sequence"
+mode = "static"
+
+# List of frame files to use.
+# For "static" mode, only the first one is used.
+# For "interpolate" mode, the first two are used (start and end).
+# For "sequence" mode, all are used in order.
+frames = ["assets/test/start.txt"]
+
+# Number of interpolation steps between frames.
+# 1 means no interpolation (direct transition).
+steps = 10
+
+# Frame rate in frames per second.
+rate = 12
+
+# Whether the animation should loop.
+loop = false
