@@ -102,3 +102,13 @@ void Renderer::wait_for_quit() {
         }
     }
 }
+
+bool Renderer::check_for_quit() {
+    ncinput nci;
+    // Don't block, just poll for input
+    char32_t key = notcurses_get_nblock(nc, &nci);
+    if (key == 'q' || key == 'Q') {
+        return true;
+    }
+    return false;
+}

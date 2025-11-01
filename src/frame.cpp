@@ -2,12 +2,31 @@
 #include <fstream>
 #include <iostream>
 #include <notcurses/notcurses.h>
+#include <utility>
 
 Frame::Frame() : width(0), height(0) {}
 
 Frame::Frame(const std::string& path) : width(0), height(0) {
     if (!load_from_file(path)) {
         std::cerr << "Error: Could not load frame from file: " << path << std::endl;
+    }
+}
+
+Frame::Frame(std::vector<std::string> new_pixels) : pixels(std::move(new_pixels)) {
+    height = pixels.size();
+    width = 0;
+    if (height > 0) {
+        for (const auto& line : pixels) {
+            int valid_bytes = 0;
+            int valid_width = 0;
+            int line_width = ncstrwidth(line.c_str(), &valid_bytes, &valid_width);
+            if (line_width < 0) {
+                line_width = valid_width;
+            }
+            if (line_width > width) {
+                width = line_width;
+            }
+        }
     }
 }
 

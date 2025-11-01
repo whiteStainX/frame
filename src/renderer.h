@@ -24,6 +24,9 @@ public:
     // Waits until the user presses the Notcurses quit key ('q').
     void wait_for_quit();
 
+    // Checks for 'q' or 'Q' input without blocking. Returns true if quit was requested.
+    bool check_for_quit();
+
 private:
     struct notcurses* nc;
     struct ncplane* stdplane;

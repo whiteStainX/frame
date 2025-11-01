@@ -13,7 +13,7 @@ This document outlines the development plan for the `frame` project, a command-l
 
 ---
 
-## Phase 2: Core Components & Static Display
+## Phase 2: Core Components & Static Display (Completed)
 
 **Objective:** Implement the core classes and fulfill the first requirement: displaying a single, static ASCII art frame, centered in the terminal.
 
