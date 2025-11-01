@@ -57,6 +57,10 @@ int main(int argc, char** argv) {
                 }
             } while (config.loop);
 
+            if (!quit_requested && !config.loop) {
+                renderer.wait_for_quit();
+            }
+
         } catch (const std::runtime_error& e) {
             std::cerr << "Error: " << e.what() << std::endl;
             return 1;

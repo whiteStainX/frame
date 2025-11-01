@@ -5,10 +5,10 @@ mode = "interpolate"
 frames = ["assets/test/start.txt", "assets/test/end.txt"]
 
 # Number of interpolation steps between frames.
-steps = 60
+steps = 48
 
 # Frame rate in frames per second.
 rate = 24
 
 # Whether the animation should loop.
-loop = true
+loop = false

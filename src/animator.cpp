@@ -3,10 +3,16 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cmath>
+#include <cstdlib> // For mblen, srand, rand
+#include <ctime>   // For time
+#include <clocale> // For setlocale
 
 Animator::Animator(const Config& config) {
     mode = config.mode;
     interpolation_steps = config.steps;
+
+    // Set the locale to allow mblen to process UTF-8 characters correctly
+    std::setlocale(LC_ALL, "");
 
     if (config.frame_paths.empty()) {
         throw std::runtime_error("Animator requires at least one frame path.");
@@ -19,6 +25,9 @@ Animator::Animator(const Config& config) {
     if (mode == "interpolate" && frames.size() < 2) {
         throw std::runtime_error("Interpolation mode requires at least two frames.");
     }
+
+    // Seed the random number generator for the dissolve effect
+    srand(time(NULL));
 }
 
 int Animator::get_total_steps() const {
@@ -26,8 +35,6 @@ int Animator::get_total_steps() const {
         return frames.size();
     }
     if (mode == "interpolate") {
-        // The number of steps is the number of intermediate frames.
-        // Total frames in animation will be steps + 1.
         return interpolation_steps;
     }
     return 0;
@@ -57,42 +64,58 @@ Frame Animator::generate_interpolated_frame(int step) const {
     const auto& start_pixels = start_frame.get_pixels();
     const auto& end_pixels = end_frame.get_pixels();
 
-    // Determine dimensions of the new frame (use the larger of the two)
     int height = std::max(start_frame.get_height(), end_frame.get_height());
-    int width = std::max(start_frame.get_width(), end_frame.get_width());
 
     std::vector<std::string> new_pixels;
     new_pixels.reserve(height);
 
     for (int y = 0; y < height; ++y) {
-        // Get corresponding lines, or an empty string if one frame is shorter
         const std::string& start_line = (y < start_pixels.size()) ? start_pixels[y] : "";
         const std::string& end_line = (y < end_pixels.size()) ? end_pixels[y] : "";
 
-        // Pad the lines to the max width before interpolating to ensure safe access
-        std::string padded_start = start_line;
-        padded_start.resize(width, ' ');
-        std::string padded_end = end_line;
-        padded_end.resize(width, ' ');
-
         std::string new_line;
-        new_line.reserve(width);
-        for (int x = 0; x < width; ++x) {
-            new_line += interpolate_char(padded_start[x], padded_end[x], progress);
+        
+        const char* p_start = start_line.c_str();
+        const char* p_end = end_line.c_str();
+        const char* const limit_start = p_start + start_line.length();
+        const char* const limit_end = p_end + end_line.length();
+
+        // Reset mblen state for each line
+        mblen(NULL, 0);
+
+        while (p_start < limit_start || p_end < limit_end) {
+            std::string char_start = " ";
+            if (p_start < limit_start) {
+                int len = mblen(p_start, limit_start - p_start);
+                if (len > 0) {
+                    char_start = std::string(p_start, len);
+                    p_start += len;
+                } else { // Invalid char, advance by 1
+                    p_start++;
+                }
+            }
+
+            std::string char_end = " ";
+            if (p_end < limit_end) {
+                int len = mblen(p_end, limit_end - p_end);
+                if (len > 0) {
+                    char_end = std::string(p_end, len);
+                    p_end += len;
+                } else { // Invalid char, advance by 1
+                    p_end++;
+                }
+            }
+
+            // Dissolve effect
+            float random_threshold = static_cast<float>(rand()) / RAND_MAX;
+            if (random_threshold < progress) {
+                new_line += char_end;
+            } else {
+                new_line += char_start;
+            }
         }
         new_pixels.push_back(new_line);
     }
 
     return Frame(new_pixels);
-}
-
-char Animator::interpolate_char(char start, char end, float progress) const {
-    // Only interpolate printable ASCII characters. For anything else (like box-drawing chars or spaces),
-    // just switch from start to end when progress passes the halfway mark. This prevents
-    // generating weird non-printable characters during the transition.
-    if (isprint(start) && isprint(end)) {
-        return static_cast<char>(start + (end - start) * progress);
-    } else {
-        return (progress < 0.5f) ? start : end;
-    }
 }
