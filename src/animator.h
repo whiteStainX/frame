@@ -27,9 +27,6 @@ private:
 
     // Generates an interpolated frame based on the step.
     Frame generate_interpolated_frame(int step) const;
-
-    // Helper function to interpolate a single character/glyph.
-    char32_t interpolate_char(char32_t start, char32_t end, float progress) const;
 };
 
 #endif //FRAME_ANIMATOR_H

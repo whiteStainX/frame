@@ -1,6 +1,6 @@
 ┌──────────────────────────────────────────────┐
 │                                              │
-│         sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd     │
+│         Welcome to the Frame static mode     │
 │                                              │
 │              Press q to exit safely          │
 │                                              │
