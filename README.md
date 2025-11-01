@@ -39,36 +39,43 @@ The application can be controlled via command-line flags, which will override an
 ./build/frame --help
 
 # Display a single static frame
-./build/frame --mode static --frames assets/test/start.txt
+./build/frame --mode static -f assets/test/start.txt
 
-# Interpolate between two frames over 30 steps, with a frame rate of 24fps, and loop
-./build/frame --mode interpolate --steps 30 --rate 24 --loop --frames assets/test/start.txt assets/test/end.txt
+# Animate a transition between two frames and loop
+./build/frame --mode sequence -f assets/test/start.txt assets/test/end.txt --loop
 
-# Play a sequence of frames
-./build/frame --mode sequence --frames assets/test/frame1.txt assets/test/frame2.txt assets/test/frame3.txt
+# Animate a sequence: 1 -> 2 -> 1. Pause 500ms between transitions.
+./build/frame --mode sequence -f assets/test/start.txt assets/test/end.txt assets/test/start.txt --pause 500
+
+# Create a "flip-book" style animation with instant transitions
+./build/frame --mode sequence -f assets/test/start.txt assets/test/end.txt --steps 0 --pause 0
 ```
 
 ## Configuration File
 
-You can define the default behavior in the `frame.toml` file.
+You can define the default behavior in the `frame.toml` file. The `sequence` and `interpolate` modes now use the same powerful animation engine.
 
 ```toml
-# Animation mode: "static", "interpolate", or "sequence"
-mode = "static"
+# Animation mode: "static" or "sequence"
+mode = "sequence"
 
-# List of frame files to use.
-# For "static" mode, only the first one is used.
-# For "interpolate" mode, the first two are used (start and end).
-# For "sequence" mode, all are used in order.
-frames = ["assets/test/start.txt"]
+# List of frame files to use in the animation.
+# - For "static" mode, only the first frame is used.
+# - For "sequence" mode, the tool will animate transitions between
+#   each adjacent pair of frames (e.g., 1->2, 2->3, etc.).
+frames = ["assets/test/start.txt", "assets/test/end.txt", "assets/test/start.txt"]
 
-# Number of interpolation steps between frames.
-# 1 means no interpolation (direct transition).
-steps = 10
+# Number of interpolation steps for the dissolve effect between frames.
+# Set to 0 for an instant, "flip-book" style transition.
+steps = 30
 
-# Frame rate in frames per second.
-rate = 12
+# Frame rate in frames per second for animations.
+rate = 24
 
-# Whether the animation should loop.
-loop = false
+# Pause in milliseconds between animation segments (e.g., after 1->2 finishes
+# and before 2->3 starts).
+pause_ms = 500
+
+# Whether the entire animation sequence should loop.
+loop = true
 ```

@@ -37,26 +37,29 @@ This document outlines the development plan for the `frame` project, a command-l
 
 ---
 
-## Phase 3: Animation Engine
+## Phase 3: Animation Engine (Completed)
 
-**Objective:** Implement the animation and interpolation features, fulfilling requirements #2, #3, and #4.
+**Objective:** Implement a flexible animation system that supports multi-frame sequences with interpolation and pauses.
 
-1.  **`Animator` Class (`src/animator.h`, `src/animator.cpp`):**
-    *   **Purpose:** To contain the complex logic for generating frames for both interpolation and sequence animations.
-    *   **Interpolation Logic:** The `Animator` will be initialized with a start `Frame`, an end `Frame`, and the number of steps. A method, `get_interpolated_frame(int step)`, will calculate and return a *new, temporary `Frame` object* for that point in the transition.
-    *   **Sequence Logic:** For simple frame-by-frame animations, the `Animator` will manage a list of `Frame`s and provide the next one in the sequence when asked.
+1.  **Configuration (`config.h`, `frame.toml`):**
+    *   Added a `pause_ms` option to specify a pause duration between animation segments.
 
-2.  **Main Logic (`src/main.cpp`):**
-    *   Implement the main animation loop.
-    *   Add logic to handle the `interpolate` and `sequence` modes.
-    *   The loop will be responsible for:
-        1.  Requesting the correct frame for the current time from the `Animator`.
-        2.  Passing that frame to the `Renderer` to be drawn.
-        3.  Sleeping for a duration calculated from the `frame_rate` setting.
-        4.  Handling the `loop` setting.
+2.  **`Animator` Class (`src/animator.h`, `src/animator.cpp`):**
+    *   Refactored into a stateless utility.
+    *   Loads all frames specified in the configuration.
+    *   Provides a `generate_interpolated_frame` method that can create a transition frame between any two given frames at a specific progress point.
+    *   The interpolation logic was updated to be UTF-8 aware using standard C++ libraries (`<cstdlib>`, `<clocale>`) and to use a "dissolve" effect for better visuals.
 
-3.  **Test Assets:**
-    *   Create an `assets/test/end.txt` and potentially other files to test multi-frame animations.
+3.  **Main Logic (`src/main.cpp`):**
+    *   Re-architected the main loop to handle sequences of interpolations.
+    *   The loop now iterates through adjacent pairs of frames (1->2, 2->3, etc.).
+    *   For each pair, it performs a full interpolation.
+    *   After each interpolation, it respects the `pause_ms` setting.
+    *   Handles `loop = false` correctly by holding the final frame until the user quits.
+
+4.  **Test Assets:**
+    *   Created an `assets/test/end.txt` file to enable testing of a 2-frame animation.
+    *   Updated `frame.toml` to default to a 3-frame sequence to demonstrate the new capabilities.
 
 ---
 
