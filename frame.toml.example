@@ -1,0 +1,21 @@
+# Animation mode: "static" or "sequence"
+mode = "sequence"
+
+# List of frame files to use in the animation.
+frames = ["assets/test/start.txt", "assets/test/end.txt", "assets/test/start.txt"]
+
+# Number of interpolation steps for the dissolve effect between frames.
+steps = 30
+
+# Frame rate in frames per second for animations.
+rate = 24
+
+# Pause in milliseconds between animation segments (e.g., after 1->2 finishes
+# and before 2->3 starts).
+pause_ms = 500
+
+# Pause in milliseconds after a full sequence completes before looping.
+loop_pause_ms = 1000
+
+# Whether the entire animation sequence should loop.
+loop = true

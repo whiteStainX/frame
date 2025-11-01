@@ -34,6 +34,7 @@ void run_animation_mode(const Config& config) {
 
         auto frame_duration = std::chrono::milliseconds(1000 / config.frame_rate);
         auto pause_duration = std::chrono::milliseconds(config.pause_ms);
+        auto loop_pause_duration = std::chrono::milliseconds(config.loop_pause_ms);
         bool quit_requested = false;
 
         do { // Main loop for the whole animation, handles the 'loop' config
@@ -74,6 +75,11 @@ void run_animation_mode(const Config& config) {
             } // End frame-pair loop
 
             if (quit_requested) break;
+
+            // If looping, handle the pause between loops
+            if (config.loop && !quit_requested && loop_pause_duration > std::chrono::milliseconds(0)) {
+                std::this_thread::sleep_for(loop_pause_duration);
+            }
 
         } while (config.loop);
 
